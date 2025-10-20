@@ -90,10 +90,10 @@ public class RandomGroupedByValueNeighborhood extends IntNeighbor{
         this.rd = new Random(seed);
         this.propFixValues = propFixValues;
         this.minVal = Arrays.stream(vars).mapToInt(IntVar::getLB).min().getAsInt();
-        this.maxVal = Arrays.stream(vars).mapToInt(IntVar::getLB).max().getAsInt();
+        this.maxVal = Arrays.stream(vars).mapToInt(IntVar::getUB).max().getAsInt();
         this.fragment = new BitSet(this.maxVal - this.minVal + 1);
         this.valueToVariables = new ArrayList<ArrayList<Integer>>(this.maxVal - this.minVal + 1);
-        for (int j = 0; j < this.maxVal - this.minVal + 1; j++) valueToVariables.add(new ArrayList<Integer>());
+        for (int j = 0; j < this.maxVal - this.minVal + 1; j++) this.valueToVariables.add(new ArrayList<Integer>());
     }
 
     @Override
@@ -130,7 +130,7 @@ public class RandomGroupedByValueNeighborhood extends IntNeighbor{
     public void fixSomeVariables() throws ContradictionException {
         nbCall ++;
         restrictLess();
-        fragment.set(0, fragment.size());
+        fragment.set(0, this.maxVal - this.minVal + 1);
         for (int j = 0; j < this.maxVal - this.minVal + 1; j ++) if (valueToVariables.get(j).isEmpty()) fragment.clear(j);
         for (int i = 0; i < nbFixedValues; i++) {
             int idValue = selectValue();
