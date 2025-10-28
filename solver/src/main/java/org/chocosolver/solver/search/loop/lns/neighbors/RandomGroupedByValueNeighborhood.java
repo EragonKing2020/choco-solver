@@ -121,8 +121,8 @@ public class RandomGroupedByValueNeighborhood extends IntNeighbor{
         nbUsedValues = 0;
         for (ArrayList<Integer> v : valueToVariables) v.clear();
         for (int i = 0; i < nbVars; i++) {
-            if (valueToVariables.get(values[i]).isEmpty()) nbUsedValues++;
-            valueToVariables.get(values[i]).add(i);
+            if (valueToVariables.get(values[i] - minVal).isEmpty()) nbUsedValues++;
+            valueToVariables.get(values[i] - minVal).add(i);
         }
     }
 

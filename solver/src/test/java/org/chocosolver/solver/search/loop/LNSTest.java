@@ -34,8 +34,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static java.lang.Math.ceil;
-import static org.chocosolver.solver.search.strategy.Search.domOverWDegSearch;
-import static org.chocosolver.solver.search.strategy.Search.lastConflict;
+import static org.chocosolver.solver.search.strategy.Search.*;
 
 /**
  * <br/>
@@ -118,6 +117,21 @@ public class LNSTest {
     public void test1(int lns) {
         // opt: 8372
         knapsack20(lns);
+    }
+
+    @Test(groups = "1s", timeOut = 60000)
+    public void testGroupedByValuesNoZero() {
+        Model model = new Model();
+        Solver solver = model.getSolver();
+        IntVar[] vars = model.intVarArray(5,3,8);
+        model.allDifferent(vars).post();
+        solver.setSearch(minDomUBSearch(vars));
+        solver.setLNS(new RandomGroupedByValueNeighborhood(vars, 0.66f, 3, 123456L));
+        solver.limitTime("5s");
+        solver.showShortStatistics();
+        Solution solution = solver.findOptimalSolution(vars[4],true);
+        Assert.assertTrue(solution.exists());
+        Assert.assertEquals(solution.getIntVal(vars[4]), 8);
     }
 
     @Test(groups="1s", timeOut=60000)
